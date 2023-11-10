@@ -12,7 +12,7 @@ class Engine(
     private val level: Level,
     private val input: Input
 ) {
-    private var screenX = 0
+    private var screenX = 0.0
     private val block1 = Image().apply { src = "/img/block.png" }
     private val block2 = Image().apply { src = "/img/block2.png" }
     private val lucky = Image().apply { src = "/img/lucky.png" }
@@ -25,8 +25,8 @@ class Engine(
     }
 
     private fun update(delta: Double) {
-        if(input.isPressed("d")) screenX += -1
-        if(input.isPressed("a")) screenX += 1
+        if(input.isPressed("d")) screenX += -5 * delta
+        if(input.isPressed("a")) screenX += 5 * delta
 
     }
 
@@ -58,7 +58,7 @@ class Engine(
                     '3' -> lucky
                     else -> null
                 }
-                draw?.let { ctx.drawImage(draw, index2 * size + screenX, index * size, size, size) }
+                draw?.let { ctx.drawImage(draw, index2 * size + (screenX * size), index * size, size, size) }
             }
         }
 
@@ -67,7 +67,7 @@ class Engine(
 
     var lastRender = 0.0
     private fun loop(timestamp: Double) {
-        val progress = timestamp - lastRender
+        val progress = (timestamp - lastRender) / 1000
 
         update(progress)
         draw()
