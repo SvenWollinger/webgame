@@ -17,18 +17,34 @@ class Engine(
     private val block2 = Image().apply { src = "/img/block2.png" }
     private val lucky = Image().apply { src = "/img/lucky.png" }
 
+    private val objects = ArrayList<Entity>()
+
     private val fpsCounter = FPSCounter()
 
+    val levelCollision = ArrayList<Rectangle>()
 
     init {
         window.requestAnimationFrame(::loop)
+        objects.add(Player(Vector2(1.0, 1.0)))
+        level.data.forEachIndexed { index1, line ->
+            line.forEachIndexed { index, c ->
+                if(c != '0') {
+                    levelCollision.add(Rectangle(index.toDouble(), index1.toDouble(), 1.0, 1.0))
+                }
+            }
+        }
     }
 
     private fun update(delta: Double) {
-        if(input.isPressed("d")) screenX += -5 * delta
-        if(input.isPressed("a")) screenX += 5 * delta
-
+        objects.forEach {
+            it.update(input, delta, levelCollision)
+        }
+        val player = (objects.first() as Player)
+        val playerPixelX = player.position.x * size()
+        val pure = playerPixelX - (screenX * size())
     }
+
+    fun size() = window.innerHeight / 16.0
 
     private fun draw() {
         if(canvas.width != window.innerWidth || canvas.height != window.innerHeight) {
@@ -36,18 +52,20 @@ class Engine(
             canvas.height = window.innerHeight
             ctx.imageSmoothingEnabled = false
         }
-
+        val size = size()
         //Size of one sprite
-        val size = window.innerHeight / 16.0
 
         //Fill background
         ctx.fillStyle = "#9290ff"
         ctx.fillRect(0.0, 0.0, window.innerWidth.toDouble(), window.innerHeight.toDouble())
 
         //Draw fps
+        val player = (objects.first() as Player)
         ctx.fillStyle = "black"
         ctx.font = "${size}px Roboto Mono"
-        ctx.fillText(fpsCounter.getString(), 0.0, size)
+        ctx.fillText("FPS: ${fpsCounter.getString()}", 0.0, size)
+        ctx.fillText("Velocity: ${player.velocity}", 0.0, size * 2)
+        ctx.fillText("Grounded: ${player.grounded}", 0.0, size * 3)
 
         //Draw level
         level.data.forEachIndexed { index, line ->
@@ -60,6 +78,16 @@ class Engine(
                 }
                 draw?.let { ctx.drawImage(draw, index2 * size + (screenX * size), index * size, size, size) }
             }
+        }
+        objects.forEach {
+            it.draw(ctx, screenX, size)
+        }
+        if(input.isPressed("f")) {
+            levelCollision.forEach {
+                ctx.strokeStyle = "black"
+                ctx.rect(it.x * size, it.y * size, it.width * size, it.height * size)
+            }
+            ctx.stroke()
         }
 
         fpsCounter.frame()
