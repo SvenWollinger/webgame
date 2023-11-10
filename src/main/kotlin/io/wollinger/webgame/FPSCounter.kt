@@ -17,6 +17,5 @@ class FPSCounter {
         fps++
     }
 
-    override fun toString() = "FPSCounter($printFps)"
     fun getString() = printFps
 }
