@@ -21,11 +21,6 @@ dependencies {
 kotlin {
     js(IR) {
         browser {
-            testTask {
-                useKarma {
-                    useChrome()
-                }
-            }
             webpackTask {
                 this.outputFileName = "app.js"
             }
