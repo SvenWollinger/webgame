@@ -35,7 +35,21 @@ dependencies {
 data class BuildInfo(
     val githash: String,
     val timestamp: Long
-)
+) {
+    companion object Serializer: SerializationStrategy<BuildInfo> {
+        override val descriptor = buildClassSerialDescriptor("BuildInfo") {
+            element<String>("githash")
+            element<Long>("timestamp")
+        }
+
+        override fun serialize(encoder: Encoder, value: BuildInfo) {
+            encoder.encodeStructure(descriptor) {
+                encodeStringElement(descriptor, 0, value.githash)
+                encodeLongElement(descriptor, 1, value.timestamp)
+            }
+        }
+    }
+}
 
 kotlin {
     js(IR) {
@@ -43,21 +57,12 @@ kotlin {
             webpackTask {
                 File("src/main/resources/build.json").apply {
                     createNewFile()
-                    val bi = BuildInfo("", System.currentTimeMillis())
-                    writeText(Json.encodeToString(serializer = object: SerializationStrategy<BuildInfo> {
-                        override val descriptor = buildClassSerialDescriptor("BuildInfo") {
-                            element<String>("githash")
-                            element<Long>("timestamp")
-                        }
-
-                        override fun serialize(encoder: Encoder, value: BuildInfo) {
-                            encoder.encodeStructure(descriptor) {
-                                encodeStringElement(descriptor, 0, value.githash)
-                                encodeLongElement(descriptor, 1, value.timestamp)
-                            }
-                        }
-
-                    }, bi))
+                    //Create and write buildinfo
+                    val buildInfo = BuildInfo("Just a little test :)", System.currentTimeMillis())
+                    writeText(Json.encodeToString(
+                        serializer = BuildInfo.Serializer,
+                        value = buildInfo
+                    ))
                 }
                 this.outputFileName = "app.js"
             }
