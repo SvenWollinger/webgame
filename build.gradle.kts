@@ -18,9 +18,7 @@ repositories {
 
 buildscript {
     dependencies {
-
         classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-
     }
 }
 
@@ -51,19 +49,23 @@ data class BuildInfo(
     }
 }
 
+fun createBuildFile() {
+    File("src/main/resources/build.json").apply {
+        createNewFile()
+        //Create and write buildinfo
+        val buildInfo = BuildInfo("Just a little test :)...", System.currentTimeMillis())
+        writeText(Json.encodeToString(
+            serializer = BuildInfo.Serializer,
+            value = buildInfo
+        ))
+    }
+}
+
 kotlin {
     js(IR) {
         browser {
             webpackTask {
-                File("src/main/resources/build.json").apply {
-                    createNewFile()
-                    //Create and write buildinfo
-                    val buildInfo = BuildInfo("Just a little test :)", System.currentTimeMillis())
-                    writeText(Json.encodeToString(
-                        serializer = BuildInfo.Serializer,
-                        value = buildInfo
-                    ))
-                }
+                createBuildFile()
                 this.outputFileName = "app.js"
             }
         }
