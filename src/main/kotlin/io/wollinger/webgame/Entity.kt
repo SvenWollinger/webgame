@@ -23,7 +23,6 @@ class Player(position: Vector2): Entity(position) {
     var grounded = false
 
     override fun update(input: Input, delta: Double, coll: List<Rectangle>, onHit: (Rectangle) -> Unit) {
-        println("Calculating physics with ${coll.size} boxes!")
         effectiveBbox.from(position.x, position.y, bbox.width, bbox.height)
 
         if(grounded) velocity.y = 0.0
@@ -66,6 +65,7 @@ class Player(position: Vector2): Entity(position) {
         }
 
         hitHead?.let(onHit)
+        velocity.limit(30.0, 30.0)
     }
 
     override fun draw(ctx: CanvasRenderingContext2D, screenX: Double, size: Double) {

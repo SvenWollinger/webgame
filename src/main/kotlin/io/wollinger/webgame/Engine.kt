@@ -64,7 +64,7 @@ class Engine(
         val pure = playerPixelX - (screenX * size())
     }
 
-    fun size() = window.innerHeight / 16.0
+    fun size() = canvas.height / 16.0
 
     private fun draw() {
         if(canvas.width != window.innerWidth || canvas.height != window.innerHeight) {

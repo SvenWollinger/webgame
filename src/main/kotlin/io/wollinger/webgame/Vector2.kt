@@ -14,6 +14,10 @@ class Vector2(var x: Double = 0.0, var y: Double = 0.0) {
         return other is Vector2 && x == other.x && y == other.y
     }
 
+    fun limit(maxX: Double, maxY: Double) {
+        if(x > maxX) x = maxX
+        if(y > maxY) y = maxY
+    }
     override fun toString() = "Vector2(x=$x, y=$y)"
     override fun hashCode() = 31 * x.hashCode() + y.hashCode()
 }
