@@ -4,7 +4,6 @@ import kotlinx.browser.window
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Image
-import kotlin.js.Date
 
 class Engine(
     private val canvas: HTMLCanvasElement,
@@ -48,9 +47,14 @@ class Engine(
         }
     }
 
+    private val distanceCheckVector = Vector2()
+    private val maxDst = 3.0
     private fun update(delta: Double) {
-        objects.forEach {
-            it.update(input, delta, levelCollision) {
+        objects.forEach { entity ->
+            entity.update(input, delta, levelCollision.filter {
+                distanceCheckVector.set(x = it.x, y = it.y)
+                distanceCheckVector.distance(entity.position) < maxDst
+            }) {
                 useLevelData.get(it.y.toInt()).set(it.x.toInt(), '0')
                 updateLevelCollision()
             }
@@ -112,9 +116,8 @@ class Engine(
 
     var lastRender = 0.0
     private fun loop(timestamp: Double) {
-        val progress = (timestamp - lastRender) / 1000
-
-        update(progress)
+        val delta = (timestamp - lastRender) / 1000
+        update(delta.coerceIn(0.0, 0.1))
         draw()
 
         lastRender = timestamp
