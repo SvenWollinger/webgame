@@ -79,14 +79,6 @@ class Engine(
         ctx.fillStyle = "#9290ff"
         ctx.fillRect(0.0, 0.0, window.innerWidth.toDouble(), window.innerHeight.toDouble())
 
-        //Draw fps
-        val player = (objects.first() as Player)
-        ctx.fillStyle = "black"
-        ctx.font = "${size}px Roboto Mono"
-        ctx.fillText("FPS: ${fpsCounter.getString()}", 0.0, size)
-        ctx.fillText("Velocity: ${player.velocity}", 0.0, size * 2)
-        ctx.fillText("Grounded: ${player.grounded}", 0.0, size * 3)
-
         //Draw level
         useLevelData.forEachIndexed { index, parts ->
             parts.forEachIndexed { index2, char ->
@@ -110,6 +102,14 @@ class Engine(
             }
             ctx.stroke()
         }
+
+        //Draw fps
+        val player = (objects.first() as Player)
+        ctx.fillStyle = "black"
+        ctx.font = "${size}px Roboto Mono"
+        ctx.fillText("FPS: ${fpsCounter.getString()}", 0.0, size)
+        ctx.fillText("Velocity: ${player.velocity}", 0.0, size * 2)
+        ctx.fillText("Grounded: ${player.grounded}", 0.0, size * 3)
 
         fpsCounter.frame()
     }

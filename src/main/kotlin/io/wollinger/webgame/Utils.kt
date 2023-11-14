@@ -48,3 +48,5 @@ fun download(url: String, onSuccess: (String) -> Unit) {
     }
 
 }
+
+fun Double.toFixed(digits: Int) = asDynamic().toFixed(2)

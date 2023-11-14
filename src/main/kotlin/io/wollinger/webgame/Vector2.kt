@@ -18,6 +18,11 @@ class Vector2(var x: Double = 0.0, var y: Double = 0.0) {
         if(x > maxX) x = maxX
         if(y > maxY) y = maxY
     }
-    override fun toString() = "Vector2(x=$x, y=$y)"
+    fun min(minX: Double, minY: Double) {
+        if(x < minX) x = minX
+        if(y < minY) y = minY
+
+    }
+    override fun toString() = "Vector2(x=${x.toFixed(2)}, y=${y.toFixed(2)})"
     override fun hashCode() = 31 * x.hashCode() + y.hashCode()
 }
