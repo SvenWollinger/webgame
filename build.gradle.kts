@@ -61,6 +61,12 @@ fun createBuildFile() {
     }
 }
 
+task<Exec>("buildAndRun") {
+    dependsOn("browserDistribution")
+    workingDir("build/distributions")
+    commandLine("php", "-S", "127.0.0.1:80")
+}
+
 kotlin {
     js(IR) {
         browser {
